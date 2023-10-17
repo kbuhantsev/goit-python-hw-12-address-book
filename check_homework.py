@@ -8,7 +8,7 @@
 from collections import UserDict
 import unittest
 
-import main
+import address_book
 
 
 RED = "\033[91m"

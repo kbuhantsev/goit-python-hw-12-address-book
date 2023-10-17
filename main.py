@@ -1,157 +1,133 @@
-from collections import UserDict
-from datetime import date
+from address_book import AddressBook, Record
+from random import randrange
+
+CLOSE_COMMANDS = ("good bye", "close", "exit")
+CONTACTS = {}
 
 
-class Field:
-    def __init__(self, value):
-        self.value = value
-
-    def __str__(self):
-        return str(self.value)
-
-
-class Name(Field):
-    def __init__(self, contact_name: str):
-        super().__init__(self.__validate_name(contact_name))
-
-    @property
-    def contact_name(self):
-        return self.value
-
-    @contact_name.setter
-    def contact_name(self, contact_name: str):
-        self.value = self.__validate_name(contact_name)
-
-    def __validate_name(self, contact_name: str) -> str:
-        if len(contact_name) < 2:
-            raise ValueError("Name must be minimum 2 characters!")
-        return contact_name
-
-
-class Phone(Field):
-    def __init__(self, contact_phone: str):
-        super().__init__(self.__validate_phone(contact_phone))
-
-    @property
-    def contact_phone(self):
-        return self.value
-
-    @contact_phone.setter
-    def contact_phone(self, contact_phone: str):
-        self.value = self.__validate_phone(contact_phone)
-
-    def __validate_phone(self, contact_phone: str) -> str:
-        if not len(contact_phone) == 10:
-            raise ValueError("Phone number must be 10 digits!")
-        elif not contact_phone.isdigit():
-            raise ValueError("Phone number must contain only digits!")
-
-        return contact_phone
-
-
-class Birthday(Field):
-
-    def __init__(self, contact_birthday: str):
-        super().__init__(self.__validate_date(contact_birthday))
-
-    @property
-    def contact_birthday(self):
-        return self.value
-
-    @contact_birthday.setter
-    def contact_birthday(self, contact_birthday: str):
-        self.value = self.__validate_date(contact_birthday)
-
-    def __validate_date(self, contact_birthday: str) -> None or date:
-        if contact_birthday is None:
-            return None
-        date_array = contact_birthday.split(".")
+def input_error(function):
+    def wrapper(*args):
         try:
-            date_value = date(int(date_array[0]), int(date_array[1]), int(date_array[2]))
-            return date_value
-        except Exception:
-            raise ValueError("birthday must have YYYY.MM.DD format!")
+            result = function(*args)
+        except KeyError as ke:
+            return str(ke)
+        except ValueError as ve:
+            return str(ve)
+        except TypeError:
+            return "Missing required parameters!"
+
+        return result
+
+    return wrapper
 
 
-class Record:
-    def __init__(self, name: str, birthday: str = None):
-        self.name = Name(name)
-        self.phones = []
-        self.birthday = Birthday(birthday)
-
-    def days_to_birthday(self):
-        if self.birthday.contact_birthday is not None:
-            contact_birthday = self.birthday.contact_birthday
-            current_day = date.today()
-            birthday = contact_birthday.replace(year=current_day.year)
-            if current_day > birthday:
-                birthday = contact_birthday.replace(year=current_day.year + 1)
-            difference = (birthday - current_day).days
-            return difference
-
-    def add_phone(self, phone: str) -> None:
-        self.phones.append(Phone(phone))
-
-    def remove_phone(self, phone: str) -> None:
-        self.phones = list(filter(lambda p: p.value != phone, self.phones))
-
-    def find_phone(self, phone: str) -> str:
-        phones_list = list(filter(lambda p: p.value == phone, self.phones))
-        return phones_list[0] if len(phones_list) else None
-
-    def edit_phone(self, phone: str, new_phone: str) -> None:
-        for record in self.phones:
-            if record.value == phone:
-                record.value = new_phone
-                return
-        raise ValueError("Phone number does not exist!")
-
-    def __str__(self):
-        return (f"Contact name: {self.name},\
-                phones: {'; '.join(p.value for p in self.phones)}, \
-                birthday: {self.birthday}")
+@input_error
+def hello() -> str:
+    return "How can I help you?"
 
 
-class AddressBook(UserDict):
+@input_error
+def add(name: str, phone_number: str) -> str:
+    # CONTACTS.setdefault(name, phone_number)
+    record = Record(name)
+    record.add_phone(phone_number)
+    book.add_record(record)
+    return "added: name-{} phone-{}".format(name, phone_number)
 
-    def __init__(self):
-        self.__portion_size = 3
-        super().__init__()
 
-    @property
-    def portion_size(self):
-        return self.__portion_size
+@input_error
+def change(name: str, phone_number: str, new_phone_number) -> str:
+    record = book.find(name)
+    if record is None:
+        raise KeyError("Can not find contact!")
 
-    @portion_size.setter
-    def portion_size(self, portion_size):
-        if portion_size <= 0:
-            raise ValueError("Portion size must be 1 or more items!")
-        self.__portion_size = portion_size
+    record.edit_phone(phone_number, new_phone_number)
 
-    def add_record(self, record: Record) -> None:
-        self.data.setdefault(record.name.value, record)
+    return "changed: name-{} phone-{}".format(name, phone_number)
 
-    def find(self, name: str):
-        if name not in self.data:
-            return None
-        return self.data[name]
 
-    def delete(self, name: str) -> None:
-        if name in self.data:
-            self.data.pop(name)
+@input_error
+def phone(name: str) -> str:
+    record = book.find(name)
+    if record is None:
+        raise KeyError("Can not find contact!")
+    return str(record)
 
-    def __iter__(self):
-        self.current_portion = 0
-        return self
 
-    def __next__(self):
-        data_list = list(self.data.items())
-        _tmp = data_list[self.current_portion: self.current_portion + self.portion_size]
-        if len(_tmp) == 0:
-            raise StopIteration
+@input_error
+def show_all() -> str:
+    result = ""
+    for part in book:
+        part = "".join(f"{value} \n" for value in part.values())
+        result += part
+    return result
+
+
+@input_error
+def find_contact(part) -> str:
+    pass
+
+
+def help_func() -> str:
+    return (' hello - to greeting you\n add {name} {phone} - adds new contact\n \
+change {name} {phone} - changes existing contact\n phone {name} - returns phone number\n \
+show_all - shows all contacts\n generate - generates 20 test contacts\n \
+good bye, close, exit - to exit')
+
+
+def generate() -> str:
+    for i in range(1, 21):
+        record = Record(
+            name="test_" + str(i),
+            birthday=f"{str(randrange(1970, 2023))}.{str(randrange(1, 12))}.{str(randrange(1, 30))}")
+        record.add_phone(str(randrange(1000000000, 9999999999)))
+        book.add_record(record)
+    return "success"
+
+
+OPERATIONS = {
+    "hello": hello,
+    "add": add,
+    "change": change,
+    "phone": phone,
+    "find": find_contact,
+    "show_all": show_all,
+    "help": help_func,
+    "generate": generate,
+}
+
+
+def input_parser(text):
+    sub_string = text.split()
+    if len(sub_string) == 1:
+        return sub_string[0], None
+    return sub_string[0], *sub_string[1:]
+
+
+if __name__ == "__main__":
+
+    book = AddressBook()
+
+    print("You can use 'help' command to see all commands")
+
+    while True:
+
+        input_text = input(">>> ").lower().strip()
+
+        if input_text in CLOSE_COMMANDS:
+            print("Good bye!")
+            break
+
+        command, *other_args = input_parser(input_text)
+
+        func = OPERATIONS.get(command, None)
+        if not func:
+            print("Wrong command")
+            continue
+
+        if not all(other_args):
+            print(func())
         else:
-            self.current_portion += self.portion_size
-            result = {}
-            for key, value in _tmp:
-                result.setdefault(key, value)
-            return result
+            print(func(*other_args))
+
+        book.save_to_file()
