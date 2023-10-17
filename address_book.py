@@ -154,6 +154,12 @@ class AddressBook(UserDict):
             return None
         return self.data[name]
 
+    def global_search(self, string) -> list:
+        result = []
+        for name, record in self.data.items():
+            result.append(record)
+        return result
+
     def delete(self, name: str) -> None:
         if name in self.data:
             self.data.pop(name)

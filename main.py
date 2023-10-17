@@ -64,14 +64,20 @@ def show_all() -> str:
 
 
 @input_error
-def find_contact(part) -> str:
-    pass
+def find_global(part: str) -> str:
+    result_list = book.global_search("")
+    print(result_list)
+    return ""
 
 
 def help_func() -> str:
-    return (' hello - to greeting you\n add {name} {phone} - adds new contact\n \
-change {name} {phone} - changes existing contact\n phone {name} - returns phone number\n \
-show_all - shows all contacts\n generate - generates 20 test contacts\n \
+    return (' hello - to greeting you\n \
+add {name} {phone} - adds new contact\n \
+change {name} {phone} - changes existing contact\n \
+phone {name} - returns phone number\n \
+find - finding contacts by part of given string \n \
+show_all - shows all contacts\n \
+generate - generates 20 test contacts\n \
 good bye, close, exit - to exit')
 
 
@@ -90,7 +96,7 @@ OPERATIONS = {
     "add": add,
     "change": change,
     "phone": phone,
-    "find": find_contact,
+    "find": find_global,
     "show_all": show_all,
     "help": help_func,
     "generate": generate,
