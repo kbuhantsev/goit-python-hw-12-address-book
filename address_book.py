@@ -1,6 +1,5 @@
 from collections import UserDict
 from datetime import date
-from random import randrange
 from pathlib import Path
 import pickle
 
@@ -48,7 +47,6 @@ class Phone(Field):
             raise ValueError("Phone number must be 10 digits!")
         elif not contact_phone.isdigit():
             raise ValueError("Phone number must contain only digits!")
-
         return contact_phone
 
 
@@ -128,8 +126,7 @@ class AddressBook(UserDict):
         file = Path.joinpath(Path.cwd(), AddressBook.FILE_NAME)
         if file.exists():
             with open(AddressBook.FILE_NAME, "rb") as fh:
-                unpacked = pickle.load(fh)
-                return unpacked
+                return pickle.load(fh)
         return {}
 
     def save_to_file(self):
@@ -185,18 +182,3 @@ class AddressBook(UserDict):
             for key, value in _tmp:
                 result.setdefault(key, value)
             return result
-
-
-# book = AddressBook()
-
-# for i in range(1, 21):
-#     record = Record(
-#         name="test_" + str(i),
-#         birthday=f"{str(randrange(1970, 2023))}.{str(randrange(1, 12))}.{str(randrange(1, 30))}")
-#     record.add_phone(str(randrange(1000000000, 9999999999)))
-#     book.add_record(record)
-
-# for part in book:
-#     print(part)
-
-# book.save_to_file()

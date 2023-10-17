@@ -2,7 +2,6 @@ from address_book import AddressBook, Record
 from random import randrange
 
 CLOSE_COMMANDS = ("good bye", "close", "exit")
-CONTACTS = {}
 
 
 def input_error(function):
@@ -15,7 +14,6 @@ def input_error(function):
             return str(ve)
         except TypeError:
             return "Missing required parameters!"
-
         return result
 
     return wrapper
@@ -28,7 +26,6 @@ def hello() -> str:
 
 @input_error
 def add(name: str, phone_number: str) -> str:
-    # CONTACTS.setdefault(name, phone_number)
     record = Record(name)
     record.add_phone(phone_number)
     book.add_record(record)
@@ -40,9 +37,7 @@ def change(name: str, phone_number: str, new_phone_number) -> str:
     record = book.find(name)
     if record is None:
         raise KeyError("Can not find contact!")
-
     record.edit_phone(phone_number, new_phone_number)
-
     return "changed: name-{} phone-{}".format(name, phone_number)
 
 
@@ -68,7 +63,6 @@ def find_global(part: str) -> str:
     result_list = book.global_search(part)
     if len(result_list) == 0:
         return "nothing were found..."
-
     return "".join(f"{record} \n" for record in result_list)
 
 
@@ -121,7 +115,6 @@ if __name__ == "__main__":
     while True:
 
         input_text = input(">>> ").lower().strip()
-
         if input_text in CLOSE_COMMANDS:
             print("Good bye!")
             break
