@@ -167,6 +167,12 @@ class AddressBook(UserDict):
         if name in self.data:
             self.data.pop(name)
 
+    def __getstate__(self):
+        return self.data
+
+    def __setstate__(self, state):
+        self.data = state
+
     def __iter__(self):
         self.current_portion = 0
         return self

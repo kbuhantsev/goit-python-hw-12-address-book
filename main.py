@@ -110,7 +110,8 @@ if __name__ == "__main__":
 
     book = AddressBook()
 
-    print("You can use 'help' command to see all commands")
+    print("****************************************************")
+    print("** You can use 'help' command to see all commands **")
 
     while True:
 
