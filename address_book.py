@@ -157,7 +157,13 @@ class AddressBook(UserDict):
     def global_search(self, string) -> list:
         result = []
         for name, record in self.data.items():
-            result.append(record)
+            if name.find(string) != -1:
+                result.append(record)
+                continue
+            for number in record.phones:
+                if number.value.find(string) != -1:
+                    result.append(record)
+                    break
         return result
 
     def delete(self, name: str) -> None:

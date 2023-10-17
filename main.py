@@ -65,9 +65,11 @@ def show_all() -> str:
 
 @input_error
 def find_global(part: str) -> str:
-    result_list = book.global_search("")
-    print(result_list)
-    return ""
+    result_list = book.global_search(part)
+    if len(result_list) == 0:
+        return "nothing were found..."
+
+    return "".join(f"{record} \n" for record in result_list)
 
 
 def help_func() -> str:
