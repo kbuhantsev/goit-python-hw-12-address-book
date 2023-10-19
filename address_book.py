@@ -24,7 +24,8 @@ class Name(Field):
     def contact_name(self, contact_name: str):
         self.value = self.__validate_name(contact_name)
 
-    def __validate_name(self, contact_name: str) -> str:
+    @staticmethod
+    def __validate_name(contact_name: str) -> str:
         if len(contact_name) < 2:
             raise ValueError("Name must be minimum 2 characters!")
         return contact_name
@@ -42,7 +43,8 @@ class Phone(Field):
     def contact_phone(self, contact_phone: str):
         self.value = self.__validate_phone(contact_phone)
 
-    def __validate_phone(self, contact_phone: str) -> str:
+    @staticmethod
+    def __validate_phone(contact_phone: str) -> str:
         if not len(contact_phone) == 10:
             raise ValueError("Phone number must be 10 digits!")
         elif not contact_phone.isdigit():
@@ -63,7 +65,8 @@ class Birthday(Field):
     def contact_birthday(self, contact_birthday: str):
         self.value = self.__validate_date(contact_birthday)
 
-    def __validate_date(self, contact_birthday: str) -> None or date:
+    @staticmethod
+    def __validate_date(contact_birthday: str) -> None or date:
         if contact_birthday is None:
             return None
         date_array = contact_birthday.split(".")
@@ -122,7 +125,8 @@ class AddressBook(UserDict):
         self.__portion_size = 5
         self.data = self.load_from_file()
 
-    def load_from_file(self):
+    @staticmethod
+    def load_from_file():
         file = Path.joinpath(Path.cwd(), AddressBook.FILE_NAME)
         if file.exists():
             with open(AddressBook.FILE_NAME, "rb") as fh:
