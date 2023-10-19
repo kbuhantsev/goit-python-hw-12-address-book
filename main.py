@@ -1,10 +1,13 @@
 from address_book import AddressBook, Record
 from random import randrange
+import functools
 
 CLOSE_COMMANDS = ("good bye", "close", "exit")
 
 
 def input_error(function):
+
+    @functools.wraps(function)
     def wrapper(*args):
         try:
             result = function(*args)
@@ -67,21 +70,22 @@ def find_global(part: str) -> str:
 
 
 def help_func() -> str:
-    return (' hello - to greeting you\n \
+    return " hello - to greeting you\n \
 add {name} {phone} - adds new contact\n \
 change {name} {phone} - changes existing contact\n \
 phone {name} - returns phone number\n \
 find - finding contacts by part of given string \n \
 show_all - shows all contacts\n \
 generate - generates 20 test contacts\n \
-good bye, close, exit - to exit')
+good bye, close, exit - to exit"
 
 
 def generate() -> str:
     for i in range(1, 21):
         record = Record(
             name="test_" + str(i),
-            birthday=f"{str(randrange(1970, 2023))}.{str(randrange(1, 12))}.{str(randrange(1, 30))}")
+            birthday=f"{str(randrange(1970, 2023))}.{str(randrange(1, 12))}.{str(randrange(1, 30))}",
+        )
         record.add_phone(str(randrange(1000000000, 9999999999)))
         book.add_record(record)
     return "success"
@@ -107,14 +111,12 @@ def input_parser(text):
 
 
 if __name__ == "__main__":
-
     book = AddressBook()
 
     print("****************************************************")
     print("** You can use 'help' command to see all commands **")
 
     while True:
-
         input_text = input(">>> ").lower().strip()
         if input_text in CLOSE_COMMANDS:
             print("Good bye!")
