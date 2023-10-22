@@ -53,7 +53,6 @@ class Phone(Field):
 
 
 class Birthday(Field):
-
     def __init__(self, contact_birthday: str):
         super().__init__(self.__validate_date(contact_birthday))
 
@@ -71,7 +70,9 @@ class Birthday(Field):
             return None
         date_array = contact_birthday.split(".")
         try:
-            date_value = date(int(date_array[0]), int(date_array[1]), int(date_array[2]))
+            date_value = date(
+                int(date_array[0]), int(date_array[1]), int(date_array[2])
+            )
             return date_value
         except Exception:
             raise ValueError("birthday must have YYYY.MM.DD format!")
@@ -101,7 +102,7 @@ class Record:
 
     def find_phone(self, phone: str) -> str:
         phones_list = list(filter(lambda p: p.value == phone, self.phones))
-        return phones_list[0] if len(phones_list) else None
+        return phones_list[0] if len(phones_list) > 0 else None
 
     def edit_phone(self, phone: str, new_phone: str) -> None:
         for record in self.phones:
@@ -111,13 +112,12 @@ class Record:
         raise ValueError("Phone number does not exist!")
 
     def __str__(self):
-        return (f"Contact name: {self.name},\
+        return f"Contact name: {self.name},\
                 phones: {'; '.join(p.value for p in self.phones)}, \
-                birthday: {self.birthday}")
+                birthday: {self.birthday}"
 
 
 class AddressBook(UserDict):
-
     FILE_NAME = "data.bin"
 
     def __init__(self):
@@ -183,7 +183,9 @@ class AddressBook(UserDict):
 
     def __next__(self):
         data_list = list(self.data.items())
-        _tmp = data_list[self.current_portion: self.current_portion + self.portion_size]
+        _tmp = data_list[
+            self.current_portion : self.current_portion + self.portion_size
+        ]
         if len(_tmp) == 0:
             raise StopIteration
         else:
