@@ -5,17 +5,8 @@ import pickle
 
 
 class Field:
-
     def __init__(self, value):
         self.value = value
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value = value
 
     def __str__(self):
         return str(self.value)
@@ -62,6 +53,7 @@ class Phone(Field):
 
 
 class Birthday(Field):
+
     def __init__(self, contact_birthday: str):
         super().__init__(self.__validate_date(contact_birthday))
 
@@ -79,9 +71,7 @@ class Birthday(Field):
             return None
         date_array = contact_birthday.split(".")
         try:
-            date_value = date(
-                int(date_array[0]), int(date_array[1]), int(date_array[2])
-            )
+            date_value = date(int(date_array[0]), int(date_array[1]), int(date_array[2]))
             return date_value
         except Exception:
             raise ValueError("birthday must have YYYY.MM.DD format!")
@@ -121,21 +111,22 @@ class Record:
         raise ValueError("Phone number does not exist!")
 
     def __str__(self):
-        return f"Contact name: {self.name},\
+        return (f"Contact name: {self.name},\
                 phones: {'; '.join(p.value for p in self.phones)}, \
-                birthday: {self.birthday}"
+                birthday: {self.birthday}")
 
 
 class AddressBook(UserDict):
+
     FILE_NAME = "data.bin"
 
     def __init__(self):
         super().__init__()
         self.__portion_size = 5
-        self.data = self.load_from_file
+        self.data = self.load_from_file()
 
-    @property
-    def load_from_file(self):
+    @staticmethod
+    def load_from_file():
         file = Path.joinpath(Path.cwd(), AddressBook.FILE_NAME)
         if file.exists():
             with open(AddressBook.FILE_NAME, "rb") as fh:
@@ -192,9 +183,7 @@ class AddressBook(UserDict):
 
     def __next__(self):
         data_list = list(self.data.items())
-        _tmp = data_list[
-            self.current_portion: self.current_portion + self.portion_size
-        ]
+        _tmp = data_list[self.current_portion: self.current_portion + self.portion_size]
         if len(_tmp) == 0:
             raise StopIteration
         else:
