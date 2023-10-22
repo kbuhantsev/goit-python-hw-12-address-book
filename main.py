@@ -1,12 +1,11 @@
-from address_book import AddressBook, Record
 from random import randrange
 import functools
+from address_book import AddressBook, Record
 
 CLOSE_COMMANDS = ("good bye", "close", "exit")
 
 
 def input_error(function):
-
     @functools.wraps(function)
     def wrapper(*args):
         try:
@@ -32,7 +31,7 @@ def add(name: str, phone_number: str) -> str:
     record = Record(name)
     record.add_phone(phone_number)
     book.add_record(record)
-    return "added: name-{} phone-{}".format(name, phone_number)
+    return f"added: name-{name} phone-{phone_number}".format(name, phone_number)
 
 
 @input_error
@@ -41,7 +40,7 @@ def change(name: str, phone_number: str, new_phone_number) -> str:
     if record is None:
         raise KeyError("Can not find contact!")
     record.edit_phone(phone_number, new_phone_number)
-    return "changed: name-{} phone-{}".format(name, phone_number)
+    return f"changed: name-{name} phone-{phone_number}".format(name, phone_number)
 
 
 @input_error
