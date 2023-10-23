@@ -41,7 +41,7 @@ def add(name: str, phone_number: str) -> str:
     record = Record(name)
     record.add_phone(phone_number)
     book.add_record(record)
-    return f"added: name-{name} phone-{phone_number}".format(name, phone_number)
+    return f"added: name-{name} phone-{phone_number}".format(name=name, phone_number=phone_number)
 
 
 @save_data
@@ -51,7 +51,7 @@ def change(name: str, phone_number: str, new_phone_number) -> str:
     if record is None:
         raise KeyError("Can not find contact!")
     record.edit_phone(phone_number, new_phone_number)
-    return f"changed: name-{name} phone-{phone_number}".format(name, phone_number)
+    return f"changed: name-{name} phone-{phone_number}".format(name=name, phone_number=phone_number)
 
 
 @input_error
