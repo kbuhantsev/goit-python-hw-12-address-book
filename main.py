@@ -21,11 +21,21 @@ def input_error(function):
     return wrapper
 
 
+def save_data(function):
+    @functools.wraps(function)
+    def wrapper(*args):
+        result = function(*args)
+        book.save_to_file()
+        return result
+    return wrapper
+
+
 @input_error
 def hello() -> str:
     return "How can I help you?"
 
 
+@save_data
 @input_error
 def add(name: str, phone_number: str) -> str:
     record = Record(name)
@@ -34,6 +44,7 @@ def add(name: str, phone_number: str) -> str:
     return f"added: name-{name} phone-{phone_number}".format(name, phone_number)
 
 
+@save_data
 @input_error
 def change(name: str, phone_number: str, new_phone_number) -> str:
     record = book.find(name)
@@ -79,6 +90,7 @@ generate - generates 20 test contacts\n \
 good bye, close, exit - to exit"
 
 
+@save_data
 def generate() -> str:
     for i in range(1, 21):
         record = Record(
@@ -132,5 +144,3 @@ if __name__ == "__main__":
             print(func())
         else:
             print(func(*other_args))
-
-        book.save_to_file()
